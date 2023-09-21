@@ -1,0 +1,105 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: 代码编译测试
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  golangci-latest:
+    runs-on: ubuntu-latest
+    name: Go Lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+          cache: false
+      # 生成依赖文件
+      - name: Delete All Model Files
+        run: |
+          rm -rf ./internal/model/do ./internal/model/entity ./internal/dao
+      - name: Delete All Service Files
+        run: |
+          rm -rf ./internal/service
+      - name: Install GF CLI dependencies
+        run: |
+          wget -O gf "https://github.com/gogf/gf/releases/download/v2.5.2/gf_$(go env GOOS)_$(go env GOARCH)" && chmod +x gf && ./gf install -y && rm ./gf
+      - name: Regenerate Model Files
+        run: |
+          gf gen dao
+      - name: Regenerate Service Files
+        run: |
+          gf gen service
+      # 进行代码检查
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.53
+
+  build-test:
+    runs-on: ubuntu-latest
+    name: Go 1.21 Build Test
+    needs: golangci-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+        cache: false
+
+    - name: Get Git Commit Log
+      id: git-commit-log
+      run: echo "GIT_COMMIT_LOG=${{ github.sha }}" >> $GITHUB_ENV
+
+    - name: Get current time
+      uses: josStorer/get-current-time@v2
+      id: current-time
+      with:
+        format: YYYYMMDD-HH
+        utcOffset: "+08:00"
+
+    - name: Get Build Time
+      id: build-time
+      run: echo "BUILD_TIME=${{ steps.current-time.outputs.readableTime }}" >> $GITHUB_ENV
+
+    - name: Print Environment Variables
+      run: |
+        echo "${{env.GIT_COMMIT_LOG}}"
+        echo "${{env.BUILD_TIME}}"
+    # 删除依赖文件
+    - name: Delete All Model Files
+      run: |
+        rm -rf ./internal/model/do ./internal/model/entity ./internal/dao
+
+    - name: Delete All Service Files
+      run: |
+        rm -rf ./internal/service
+
+    - name: Install GF CLI dependencies
+      run: |
+        wget -O gf "https://github.com/gogf/gf/releases/download/v2.5.2/gf_$(go env GOOS)_$(go env GOARCH)" && chmod +x gf && ./gf install -y && rm ./gf
+
+    # 生成依赖文件
+    - name: Regenerate Model Files
+      run: |
+        gf gen dao
+    - name: Regenerate Service Files
+      run: |
+        gf gen service
+
+    # 编译测试
+    - name: Go Build Binary Test
+      run: |
+        go build 
+        pwd
+
