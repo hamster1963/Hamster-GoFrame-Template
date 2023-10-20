@@ -3,9 +3,9 @@ module kes-speed-backend
 go 1.20
 
 require (
-	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.5.4
+	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.5.5
 	github.com/gogf/gf/contrib/nosql/redis/v2 v2.5.4
-	github.com/gogf/gf/v2 v2.5.4
+	github.com/gogf/gf/v2 v2.5.5
 	github.com/golang-jwt/jwt/v5 v5.0.0
 )
 
@@ -34,8 +34,8 @@ require (
 	go.opentelemetry.io/otel/metric v1.18.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.18.0 // indirect
 	go.opentelemetry.io/otel/trace v1.18.0 // indirect
-	golang.org/x/net v0.15.0 // indirect
-	golang.org/x/sys v0.12.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
