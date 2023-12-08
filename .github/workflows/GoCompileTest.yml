@@ -33,12 +33,6 @@ jobs:
       - name: Install GF CLI dependencies
         run: |
           wget -O gf "https://github.com/gogf/gf/releases/download/v2.5.2/gf_$(go env GOOS)_$(go env GOARCH)" && chmod +x gf && ./gf install -y && rm ./gf
-      - name: Regenerate Model Files
-        run: |
-          gf gen dao
-      - name: Regenerate Service Files
-        run: |
-          gf gen service
       # 进行代码检查
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
@@ -87,15 +81,8 @@ jobs:
 
     - name: Install GF CLI dependencies
       run: |
-        wget -O gf "https://github.com/gogf/gf/releases/download/v2.5.2/gf_$(go env GOOS)_$(go env GOARCH)" && chmod +x gf && ./gf install -y && rm ./gf
+        wget -O gf https://github.com/gogf/gf/releases/latest/download/gf_$(go env GOOS)_$(go env GOARCH) && chmod +x gf && ./gf install -y && rm ./gf
 
-    # 生成依赖文件
-    - name: Regenerate Model Files
-      run: |
-        gf gen dao
-    - name: Regenerate Service Files
-      run: |
-        gf gen service
 
     # 编译测试
     - name: Go Build Binary Test
