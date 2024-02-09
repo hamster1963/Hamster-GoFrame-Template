@@ -35,7 +35,7 @@ jobs:
           wget -O gf "https://github.com/gogf/gf/releases/download/v2.5.2/gf_$(go env GOOS)_$(go env GOARCH)" && chmod +x gf && ./gf install -y && rm ./gf
       # 进行代码检查
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v4
         with:
           version: v1.53
 
